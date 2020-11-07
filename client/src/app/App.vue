@@ -1,12 +1,28 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <app-nav-bar></app-nav-bar>
     <router-view/>
   </div>
 </template>
+
+<script>
+import AppNavBar from '../components/AppNavBar.vue'
+
+export default {
+  name: 'app',
+  components: {
+    AppNavBar
+  },
+  sockets: {
+    connect: function () {
+      console.log('socket connected')
+    },
+    wood: function (val) {
+      this.$store.dispatch('ADD_WOOD', val)
+    }
+  }
+}
+</script>
 
 <style>
 #app {

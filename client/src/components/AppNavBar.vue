@@ -17,7 +17,6 @@
 </template>
 
 <script>
-import { auth } from '../app/firebaseConfig'
 import store from '../app/store'
 
 export default {
@@ -32,14 +31,8 @@ export default {
     ]
   }),
   computed: {
-    loggedIn () {
-      return store.state.loggedIn
-    }
   },
   methods: {
-    signOut: function () {
-      this.$store.dispatch('logout')
-    }
   }
 }
 </script>

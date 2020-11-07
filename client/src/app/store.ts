@@ -6,15 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    woods : null,
-    handle : ""
+    woods : null
   },
   getters : {
     WOODS : state => {
       return state.woods
-    },
-    HANDLE : state => {
-      return state.handle
     }
   },
   mutations: {
@@ -24,9 +20,6 @@ export default new Vuex.Store({
     ADD_WOOD : (state,payload) => {
       // @ts-ignore
       state.woods.push(payload);
-    },
-    SET_HANDLE : (state,payload) => {
-      state.handle = payload;
     }
   },
   actions: {
@@ -37,11 +30,8 @@ export default new Vuex.Store({
     },
     ADD_WOOD : (context,payload)=> {
       context.commit("ADD_WOOD",payload);
-    },
-    SET_HANDLE : (context,payload)=> {
-      context.commit("SET_HANDLE",payload);
     }
   },
   modules: {
-  }
+  },
 })

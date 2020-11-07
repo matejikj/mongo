@@ -1,4 +1,4 @@
-const woodBuilder = require('../controllers/woodController');
+const woodBuilder = require('./controllers');
 
 module.exports = app => {
   app
