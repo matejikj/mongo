@@ -4,7 +4,6 @@
       <b-collapse id="collapse-1" class="mt-2">
         <b-card>
           <b-form>
-
             <b-form-group label="Jmeno:" label-for="input-2">
               <b-form-input
                 v-model="newName"
@@ -17,12 +16,12 @@
         </b-card>
       </b-collapse>
     <b-row>
-      <b-table striped hover :items="orders" :fields="fields">
+      <b-table striped hover :items="WOODS" :fields="fields">
         <template #head(Name)="data">
           <div style="width: 140px; height: 120px; transform: translateX(15px)">{{ data.label }}</div>
         </template>
         <template #cell(Name)="data">
-          <b-form-input @blur="updateUser(data.item)" v-model="data.item.Name"></b-form-input>
+          <b-form-input @blur="updateUser(data.item)" v-model="data.item.name"></b-form-input>
         </template>
       </b-table>
     </b-row>
@@ -31,10 +30,23 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import Axios from 'axios'
 
 export default {
   name: 'Wood',
   components: {},
+  computed: {
+    ...mapGetters(['WOODS'])
+  },
+  sockets: {
+    wood: function (val) {
+      console.log('PODARIOLO SEEEE')
+      this.$store.dispatch('ADD_WOOD', val)
+    }
+  },
+  mounted () {
+    this.$store.dispatch('SET_WOOD')
+  },
   data: () => ({
     newName: '',
     pridat: false,
@@ -44,8 +56,8 @@ export default {
     ]
   }),
   methods: {
-    addWood (name) {
-      console.log(this.newName)
+    async addWood () {
+      await Axios.post('http://localhost:5000/wood', { name: this.newName, age: 20 })
     }
   }
 }

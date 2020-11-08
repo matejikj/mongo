@@ -14,9 +14,8 @@ Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
 Vue.use(new VueSocketIO({
-  connection: 'http://localhost:8081'
+  connection: 'http://localhost:5000'
 }))
-
 new Vue({
   router,
   store,

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Home from '../views/Home.vue'
 import Wood from '../views/Wood.vue'
+import Users from '../views/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -9,13 +10,17 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
-    
+    component: Users
   },
   {
     path: '/wood',
     name: 'Wood',
     component: Wood
+  },
+  {
+    path: '/user',
+    name: 'User',
+    component: Users
   }
 ]
 

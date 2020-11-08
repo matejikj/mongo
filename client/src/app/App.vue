@@ -16,9 +16,6 @@ export default {
   sockets: {
     connect: function () {
       console.log('socket connected')
-    },
-    wood: function (val) {
-      this.$store.dispatch('ADD_WOOD', val)
     }
   }
 }
