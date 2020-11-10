@@ -149,7 +149,7 @@
       </b-card>
     </b-collapse>
     <b-row style="overflow: scroll">
-      <b-table striped hover :items="users" :fields="fields">
+      <b-table striped hover :items="USERS" :fields="fields">
         <template #head(Delete)="data">
           <div style="width: 10px; height: 120px; transform: translateX(15px)">
             {{ data.label }}
@@ -464,22 +464,27 @@ export default {
   sockets: {
     userAdded: function (val) {
       console.log('add')
-      this.addUserList(val)
+      this.$store.dispatch('ADD_USER', val)
+      // this.addUserList(val)
     },
     userUpdated: function (val) {
       console.log('up')
-      this.updateUserList(val)
+      this.$store.dispatch('PUT_USER', val)
+      // this.updateUserList(val)
     },
     userDeleted: function (val) {
       console.log('del')
-      this.removeUserList(val)
+      this.$store.dispatch('DELETE_USER', val)
+      // this.removeUserList(val)
     }
   },
+  computed: {
+    ...mapGetters(['USERS'])
+  },
   mounted () {
-    this.getUsers()
+    this.$store.dispatch('SET_USER')
   },
   data: () => ({
-    users: [],
     newName: '',
     newPassword: '',
     pridat: false,
@@ -536,44 +541,6 @@ export default {
     ]
   }),
   methods: {
-    updateUserList (payload) {
-      const i = this.users.findIndex(element => element._id === payload._id)
-      this.users[i].Password = payload.Password
-      this.users[i].Username = payload.Username
-      this.users[i].Archiv = payload.Archiv
-      this.users[i].Dokonceni = payload.Dokonceni
-      this.users[i].Dvere = payload.Dvere
-      this.users[i].Expedice = payload.Expedice
-      this.users[i].IsAdmin = payload.IsAdmin
-      this.users[i].Klapacka = payload.Klapacka
-      this.users[i].Kompletace = payload.Kompletace
-      this.users[i].Obchod = payload.Obchod
-      this.users[i].Oblozky = payload.Oblozky
-      this.users[i].Posuv = payload.Posuv
-      this.users[i].PrepisCisloZakazky = payload.PrepisCisloZakazky
-      this.users[i].PresunDoArchivu = payload.PresunDoArchivu
-      this.users[i].PresunDoExpedice = payload.PresunDoExpedice
-      this.users[i].PresunDoVyroby = payload.PresunDoVyroby
-      this.users[i].Priprava = payload.Priprava
-      this.users[i].PripravarVyroby = payload.PripravarVyroby
-      this.users[i].PristupDrevo = payload.PristupDrevo
-      this.users[i].PristupHlinik = payload.PristupHlinik
-      this.users[i].PristupOcel = payload.PristupOcel
-      this.users[i].Ramecek = payload.Ramecek
-      this.users[i].Sklad = payload.Sklad
-      this.users[i].Stredove = payload.Stredove
-    },
-    removeUserList (payload) {
-      const i = this.users.findIndex(element => element._id === payload.documentKey._id)
-      this.users.splice(i, 1)
-    },
-    addUserList (payload) {
-      this.users.push(payload)
-    },
-    async getUsers () {
-      const { data } = await Axios.get('http://localhost:5000/user')
-      this.users = data
-    },
     async updateUser (item) {
       await Axios.put('http://localhost:5000/user', item)
     },

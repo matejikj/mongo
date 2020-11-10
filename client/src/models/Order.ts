@@ -1,5 +1,5 @@
 export interface Order {
-    OrderId: string;
+    _id: Number;
     SortNr: string;
     NotBlank: string;
     IsInProccess: string;

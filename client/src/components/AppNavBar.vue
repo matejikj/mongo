@@ -6,6 +6,21 @@
       <b-navbar-nav>
         <b-nav-item href="./wood">Dřevo</b-nav-item>
       </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="./aluminium">Hliník</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="./steel">Ocel</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="./expedition">Expedice</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="./archive">Archiv</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="./history">Historie</b-nav-item>
+      </b-navbar-nav>
 
       <!-- Right aligned nav items -->
       <b-navbar-nav class="ml-auto">

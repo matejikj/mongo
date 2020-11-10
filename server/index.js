@@ -4,8 +4,9 @@ const mongoose = require('mongoose')
 const socket = require('socket.io')
 const cors = require('cors')
 const keys = require('./config/keys')
-const wood = require('./model/wood')
+const order = require('./model/order')
 const user = require('./model/user')
+const expedition = require('./model/expedition')
 
 /*
   INITIALIZE SECTION
@@ -24,21 +25,16 @@ mongoose.connection.once('open',function(){
 })
 
 /*
-  WOOD CONTROLLER
+  ORDER CONTROLLER
 */
 
-app.get('/wood', async (req,res) => {
-  let result = await wood.find()
+app.get('/order', async (req,res) => {
+  let result = await order.find()
   res.send(result);
 })
 
-app.post('/wood', async (req,res) => {
-  var object = {
-    name: req.body.name,
-    age: req.body.age
-  };
-
-  wood.create(object, function(err, result) {
+app.post('/order', async (req,res) => {
+  order.create(req.body, function(err, result) {
     if (err) {
       res.send(err);
     } else {
@@ -47,28 +43,30 @@ app.post('/wood', async (req,res) => {
   });
 })
 
-app.put('/wood', async (req,res) => {
-  console.log(req.body.id)
-  // task.findOneAndUpdate(
-  //   { _id: req.params.taskId },
-  //   req.body,
-  //   { new: true },
-  //   (err, task) => {
-  //     if (err) res.send(err);
-  //     res.json(task);
-  //   }
-  // );
+app.put('/order', async (req,res) => {
+  order.findOneAndUpdate(
+    { _id: req.body._id },
+    req.body,
+    { new: true },
+    (err, task) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(task);
+      }
+    }
+  );
 })
 
-app.delete('/wood', async (req,res) => {
-  console.log(req.body.id)
-  // task.deleteOne({ _id: req.body.id }, err => {
-  //   if (err) res.send(err);
-  //   res.json({
-  //     message: 'task successfully deleted',
-  //    _id: req.params.taskId
-  //   });
-  // });
+app.delete('/order/:orderId', async (req,res) => {
+  console.log(req.params.orderId)
+  order.deleteOne({ _id: req.params.orderId }, err => {
+    if (err) res.send(err);
+    res.json({
+      message: 'task successfully deleted',
+     _id: req.params.orderId
+    });
+  });
 })
 
 /*
@@ -76,7 +74,6 @@ app.delete('/wood', async (req,res) => {
 */
 
 app.get('/user', async (req,res) => {
-  console.log("USERS")
   let result = await user.find()
   res.send(result);
 })
@@ -118,6 +115,51 @@ app.delete('/user/:userId', async (req,res) => {
 })
 
 /*
+  EXPEDITION CONTROLLER
+*/
+
+app.get('/expedition', async (req,res) => {
+  let result = await expedition.find()
+  res.send(result);
+})
+
+app.post('/expedition', async (req,res) => {
+  expedition.create(req.body, function(err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
+app.put('/expedition', async (req,res) => {
+  expedition.findOneAndUpdate(
+    { _id: req.body._id },
+    req.body,
+    { new: true },
+    (err, task) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json(task);
+      }
+    }
+  );
+})
+
+app.delete('/expedition/:expeditionId', async (req,res) => {
+  console.log(req.params.expeditionId)
+  expedition.deleteOne({ _id: req.params.expeditionId }, err => {
+    if (err) res.send(err);
+    res.json({
+      message: 'task successfully deleted',
+     _id: req.params.expeditionId
+    });
+  });
+})
+
+/*
   START SERVER
 */
 
@@ -128,20 +170,32 @@ var server = app.listen(5000,()=>{
 let io =  socket(server);
 
 /*
-  WOOD CHANGESTREAM
+  ORDER CHANGESTREAM
 */
 
-const woodChangeStream = wood.watch();
+const orderChangeStream = order.watch();
 
-woodChangeStream.on('change', (change) => {
-  console.log(change)
+orderChangeStream.on('change', async (change) => {
   switch (change.operationType) {
     case 'insert':
-      console.log('WOOD INSERT')
+      order.findById(change.documentKey._id, (err, task) => {
+        if (err) res.send(err);
+        console.log('orderAdded')
+        io.emit('orderAdded', task);
+      });
+      break;
+    case 'update':
+      order.findById(change.documentKey._id, (err, task) => {
+        if (err) res.send(err);
+        console.log('orderUpdated')
+        io.emit('orderUpdated', task);
+      });
+      break;
+    case 'delete':
+      console.log('orderDeleted')
+      io.emit('orderDeleted', change);
       break;
   }
-  // console.log(change); // You could parse out the needed info and send only that data. 
-  // io.emit('wood', change);
 });
 
 /*
@@ -158,8 +212,6 @@ userChangeStream.on('change', async (change) => {
         console.log('userAdded')
         io.emit('userAdded', task);
       });
-      // const { dataInserted } = await user.findById(change.documentKey._id)
-      //io.emit('userAdded', dataInserted);
       break;
     case 'update':
       user.findById(change.documentKey._id, (err, task) => {
@@ -167,22 +219,47 @@ userChangeStream.on('change', async (change) => {
         console.log('userUpdated')
         io.emit('userUpdated', task);
       });
-      // const { data } = await user.findById(change.documentKey._id)
-      // io.emit('userUpdated', data);
       break;
     case 'delete':
       console.log('userDeleted')
       io.emit('userDeleted', change);
       break;
   }
-  // console.log(change); // You could parse out the needed info and send only that data. 
-  // io.emit('wood', change);
+});
+
+/*
+  EXPEDITION CHANGESTREAM
+*/
+
+const expeditionChangeStream = expedition.watch();
+
+expeditionChangeStream.on('change', async (change) => {
+  switch (change.operationType) {
+    case 'insert':
+      expedition.findById(change.documentKey._id, (err, task) => {
+        if (err) res.send(err);
+        console.log('expeditionAdded')
+        io.emit('expeditionAdded', task);
+      });
+      break;
+    case 'update':
+      expedition.findById(change.documentKey._id, (err, task) => {
+        if (err) res.send(err);
+        console.log('expeditionUpdated')
+        io.emit('expeditionUpdated', task);
+      });
+      break;
+    case 'delete':
+      console.log('expeditionDeleted')
+      io.emit('expeditionDeleted', change);
+      break;
+  }
 });
 
 io.on("connection", function(socket){
   console.log("Socket Connection Established with ID :"+ socket.id)
-  socket.on("wood", async function(val){
-    // let response = await new message(val).save()
-    // socket.emit("wood",val)
-  })
+  // socket.on("wood", async function(val){
+  //   // let response = await new message(val).save()
+  //   // socket.emit("wood",val)
+  // })
 })

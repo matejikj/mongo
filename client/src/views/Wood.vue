@@ -16,12 +16,22 @@
         </b-card>
       </b-collapse>
     <b-row>
-      <b-table striped hover :items="WOODS" :fields="fields">
+      <b-table striped hover :items="orders" :fields="fields">
         <template #head(Name)="data">
           <div style="width: 140px; height: 120px; transform: translateX(15px)">{{ data.label }}</div>
         </template>
         <template #cell(Name)="data">
-          <b-form-input @blur="updateUser(data.item)" v-model="data.item.name"></b-form-input>
+          <b-form-input @blur="updateOrder(data.item)" v-model="data.item.Zakazka"></b-form-input>
+        </template>
+      </b-table>
+    </b-row>
+    <b-row>
+      <b-table striped hover :items="newOrders" :fields="fields">
+        <template #head(Name)="data">
+          <div style="width: 140px; height: 120px; transform: translateX(15px)">{{ data.label }}</div>
+        </template>
+        <template #cell(Name)="data">
+          <b-form-input @blur="updateOrder(data.item)" v-model="data.item.Zakazka"></b-form-input>
         </template>
       </b-table>
     </b-row>
@@ -36,7 +46,12 @@ export default {
   name: 'Wood',
   components: {},
   computed: {
-    ...mapGetters(['WOODS'])
+    orders () {
+      return this.$store.state.orders.filter(order => order.Department === 1 && order.IsInProccess)
+    },
+    newOrders () {
+      return this.$store.state.orders.filter(order => order.Department === 1 && !order.IsInProccess)
+    }
   },
   sockets: {
     wood: function (val) {
@@ -56,9 +71,6 @@ export default {
     ]
   }),
   methods: {
-    async addWood () {
-      await Axios.post('http://localhost:5000/wood', { name: this.newName, age: 20 })
-    }
   }
 }
 
