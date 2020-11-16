@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const OrderSchema = new Schema({
+  OrderId: Number,
   SortNr: Number,
   NotBlank: Boolean,
   IsInProccess: Boolean,

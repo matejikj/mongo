@@ -1,5 +1,6 @@
 export interface Order {
     _id: Number;
+    OrderId: Number;
     SortNr: string;
     NotBlank: string;
     IsInProccess: string;

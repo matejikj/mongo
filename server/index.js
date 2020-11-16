@@ -14,6 +14,7 @@ const expedition = require('./model/expedition')
 
 const app = new express()
 app.use(bodyParser.json())
+
 app.use(cors())
 
 mongoose.connect(keys.mongoURI);

@@ -149,7 +149,7 @@
       </b-card>
     </b-collapse>
     <b-row style="overflow: scroll">
-      <b-table striped hover :items="USERS" :fields="fields">
+      <b-table striped hover :items="users" :fields="fields">
         <template #head(Delete)="data">
           <div style="width: 10px; height: 120px; transform: translateX(15px)">
             {{ data.label }}
@@ -479,7 +479,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['USERS'])
+    users () {
+      return this.$store.state.users
+    }
   },
   mounted () {
     this.$store.dispatch('SET_USER')

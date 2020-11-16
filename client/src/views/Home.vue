@@ -1,15 +1,24 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <!-- <b-btn @click="addOrders">Nahraj</b-btn> -->
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
+import { datasets } from '../../data'
+import Axios from 'axios'
 
 export default {
   name: 'Home',
   components: {
+  },
+  methods: {
+    // async addOrders (item) {
+    //   datasets.orders.forEach(async (element) => {
+    //     await Axios.post('http://localhost:5000/order', element)
+    //     console.log('PRIDANO')
+    //   })
+    // }
   }
 }
 </script>
