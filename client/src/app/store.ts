@@ -27,6 +27,14 @@ export default new Vuex.Store({
       // @ts-ignore
       state.orders.push(payload)
     },
+    UNPROCESS_ORDER: (state, payload) => {
+      // @ts-ignore
+      state.orders.filter(x => x.SortNr > payload.SortNr).forEach(x => x.SortNr--)
+    },
+    MOVEDOWN_ORDER: (state, payload) => {
+      // @ts-ignore
+      state.orders.filter(x => x.SortNr > payload.old && x.SortNr <= payload.new).forEach(x => x.SortNr--)
+    },
     PUT_ORDER: (state, payload) => {
       const i = state.orders.findIndex(element => element._id === payload._id)
       state.orders[i].SortNr = payload.SortNr
@@ -397,6 +405,12 @@ export default new Vuex.Store({
     },
     DELETE_ORDER: async (context, payload) => {
       context.commit('DELETE_ORDER', payload)
+    },
+    UNPROCESS_ORDER: async (context, payload) => {
+      context.commit('UNPROCESS_ORDER', payload)
+    },
+    MOVEDOWN_ORDER: async (context, payload) => {
+      context.commit('MOVEDOWN_ORDER', payload)
     },
     SET_USER: async (context) => {
       const { data } = await Axios.get('http://localhost:5000/user')

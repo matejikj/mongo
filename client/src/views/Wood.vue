@@ -1,20 +1,111 @@
 <template>
-  <b-container fluid>
+  <b-container class="mujContainer" fluid>
     <b-modal id="pododdeleni-modal">
-      <b-form-input v-model="pododdeleniText" placeholder="Co hledat..."></b-form-input>
+      <b-form-input v-model="pododdeleniText" placeholder="Co hledat"></b-form-input>
       <verte picker="square" model="rgb"></verte>
+    </b-modal>
+    <b-modal
+      @ok="moveRow"
+      id="presun-modal">
+      <b-form-input v-model="presunText" placeholder=""></b-form-input>
+    </b-modal>
+    <b-modal
+      @ok="createOrder"
+      id="new-order-modal">
+      <b-container class="bv-example-row">
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+        <b-row>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+          <b-col sm="6">
+            <div>Datum zahájení:</div>
+            <b-form-input v-model="newOrder.datumZahajeni"></b-form-input>
+          </b-col>
+        </b-row>
+      </b-container>
     </b-modal>
     <b-row>
       <b-button-toolbar responsive aria-label="Toolbar with button groups and dropdown menu">
         <b-button-group>
           <b-button style="margin: 2px;">Odstranit</b-button>
-          <b-button style="margin: 2px;">Přesun řádku</b-button>
+          <b-button @click="moveRowToggle" style="margin: 2px;">Přesun řádku</b-button>
           <b-button style="margin: 2px;">Archiv</b-button>
           <b-button style="margin: 2px;">Expedice</b-button>
         </b-button-group>
         <b-button-group>
           <b-button style="margin: 2px;">Obnovit</b-button>
-          <b-button style="margin: 2px;">Vrátit do obchodu</b-button>
+          <b-button @click="orderUnprocess" style="margin: 2px;">Vrátit do obchodu</b-button>
           <b-button style="margin: 2px;">Vytisknout</b-button>
           <b-button style="margin: 2px;">Prázdný řádek</b-button>
         </b-button-group>
@@ -28,7 +119,7 @@
       <b-table
         id="mojeTable"
         sticky-header
-        v-bind:style="{ height: pripravaHeight + 'vh', padding: '0px', maxHeight: '80vh' }"
+        v-bind:style="{ height: pripravaHeight + 'vh', padding: '0px', maxHeight: '84vh' }"
         responsive bordered hover
         sortable :filter="filter"
         :items="orders" :fields="fields"
@@ -135,7 +226,7 @@
         </template>
         <template #cell(Doc)="data">
           <b-button @click="showDoc(data.item)" variant="outline-light" pill>
-            <b-icon icon="file-earmark-text" variant="success"></b-icon>
+            <b-icon icon="file-earmark-text" variant="dark"></b-icon>
           </b-button>
         </template>
 
@@ -146,7 +237,7 @@
         </template>
         <template #cell(EditDocPath)="data">
           <b-button @click="showEditDocPath(data.item)" variant="outline-light" pill>
-            <b-icon icon="file-earmark-text" variant="success"></b-icon>
+            <b-icon icon="file-earmark-text" variant="dark"></b-icon>
           </b-button>
         </template>
 
@@ -1196,8 +1287,14 @@ dsf -->
     </b-row>
     <b-row>
       <b-button-toolbar aria-label="Toolbar with button groups and dropdown menu">
-        <b-button-group class="mx-1">
+        <b-button-group>
           <b-button @click="obchodVisible = true; pripravaHeight = 55;" v-if="!obchodVisible">Otevřít obchod</b-button>
+          <b-button @click="toggleNewOrder" v-b-modal="'my-modal'" v-if="obchodVisible">Vytvořit zakázku</b-button>
+          <b-button v-if="obchodVisible">Odstranit</b-button>
+          <b-button @click="newOrderProcess()" v-if="obchodVisible">Předat ke zpracování</b-button>
+          <b-modal id="my-modal">Hello From My Modal!</b-modal>
+        </b-button-group>
+        <b-button-group>
           <b-button @click="obchodVisible = false; pripravaHeight = 84;" v-if="obchodVisible">Zavřít obchod</b-button>
         </b-button-group>
       </b-button-toolbar>
@@ -1226,7 +1323,112 @@ dsf -->
     fsdafasdkjhkghjkhgkghjkgh
      */ -->
     <b-row v-if="obchodVisible">
-      AAAAAAAAAAAA
+      <b-table
+        id="mojeTable"
+        sticky-header
+        v-bind:style="{ height: pripravaHeight + 'vh', padding: '0px', maxHeight: '28vh' }"
+        responsive bordered hover
+        sortable
+        :items="newOrders" :fields="newFields"
+        selectable
+        :select-mode="selectMode"
+        @row-selected="onNewRowSelected"
+      >
+        <template #head(ZahajeniDatum)="data">
+          <div style="width: 140px;">
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(ZahajeniDatum)="data">
+          <div style="width: 140px;">
+            <b-form-datepicker
+              :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+              right id="example-datepicker" size="sm" locale="cs"
+              v-model="data.item.ZahajeniDatum"
+            ></b-form-datepicker>
+          </div>
+        </template>
+        <template #head(Technik)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(Technik)="data">
+          {{ data.item.Technik }}
+        </template>
+
+        <template #head(Zakazka)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(Zakazka)="data">
+          <div :style="{background: data.item.ZakazkaColor}" v-on:dblclick="doubleClick">
+            {{ data.item.Zakazka }}
+          </div>
+        </template>
+
+        <template #head(Poznamky)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(Poznamky)="data">
+          <b-form-input
+            :id="'poznamky' + data.item.SortNr"
+            @blur="updateOrder(data.item)"
+            v-model="data.item.Poznamky"
+          ></b-form-input>
+          <b-tooltip :target="'poznamky' + data.item.SortNr" :title="data.item.Poznamky">
+            {{ data.item.Poznamky }}
+          </b-tooltip>
+        </template>
+
+        <template #cell(Material)="data">
+          <div :id="'material' + data.item.SortNr" style="white-space:nowrap; overflow: hidden; width: 140px;">
+            {{ data.item.Material }}
+          </div>
+          <b-tooltip :target="'material' + data.item.SortNr" :title="data.item.Material">
+            {{ data.item.Material }}
+          </b-tooltip>
+        </template>
+        <template #head(Material)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+
+        <template #head(ZakazkaNr)="data">
+          {{ data.label }}
+        </template>
+        <template #cell(ZakazkaNr)="data">
+          <div>
+            {{ data.item.ZakazkaNr }}
+          </div>
+        </template>
+
+        <template #head(VyrobniNr)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(VyrobniNr)="data">
+          <div>
+            {{ data.item.VyrobniNr }}
+          </div>
+        </template>
+
+        <template #head(Doc)="data">
+          <div>
+            {{ data.label }}
+          </div>
+        </template>
+        <template #cell(Doc)="data">
+          <b-button @click="showDoc(data.item)" variant="outline-light" pill>
+            <b-icon icon="file-earmark-text" variant="dark"></b-icon>
+          </b-button>
+        </template>
+      </b-table>
     </b-row>
   </b-container>
 </template>
@@ -1250,7 +1452,22 @@ export default {
     },
     orderUpdated: function (val) {
       console.log('up')
+      console.log(val)
       this.$store.dispatch('PUT_ORDER', val)
+      // this.updateUserList(val)
+    },
+    orderUnprocessed: function (val) {
+      console.log('up')
+      console.log(val)
+      this.$store.dispatch('PUT_ORDER', val)
+      this.$store.dispatch('UNPROCESS_ORDER', val)
+      // this.updateUserList(val)
+    },
+    orderMovedDown: function (val) {
+      console.log('down')
+      console.log(val)
+      this.$store.dispatch('MOVEDOWN_ORDER', val)
+      this.$store.dispatch('PUT_ORDER', val.item)
       // this.updateUserList(val)
     },
     orderDeleted: function (val) {
@@ -1261,22 +1478,29 @@ export default {
   },
   computed: {
     orders () {
-      return this.$store.state.orders.filter(todo => todo.Department === 1 && todo.IsInProccess).sort((a, b) => a.SortNr - b.SortNr)
+      return this.$store.state.orders.filter(todo => todo.Department === 1 &&
+        todo.IsInProccess && !todo.IsDeleted && !todo.IsArchived).sort((a, b) => a.SortNr - b.SortNr)
     },
     newOrders () {
-      return this.$store.state.orders.filter(todo => todo.Department === 1 && !todo.IsInProccess).sort((a, b) => a.SortNr - b.SortNr)
+      return this.$store.state.orders.filter(todo => todo.Department === 1 &&
+        !todo.IsInProccess && !todo.IsDeleted && !todo.IsArchived).sort((a, b) => a.SortNr - b.SortNr)
     }
   },
   mounted () {
     this.$store.dispatch('SET_ORDER')
   },
   data: () => ({
+    newOrder: {
+      datumZahajeni: ''
+    },
+    presunText: '',
     pododdeleniText: '',
     obchodHeight: '28',
-    pripravaHeight: '80',
+    pripravaHeight: '84',
     obchodVisible: false,
-    selectMode: 'multi',
+    selectMode: 'single',
     selected: [],
+    newSelected: [],
     filter: '',
     finder: '',
     Priprava: false,
@@ -1367,6 +1591,21 @@ export default {
       { label: 'PSC', group: 'Adresa', thClass: 'd-none', tdClass: 'd-none', key: 'PSC' },
       { label: 'Map', key: 'Map' },
       { label: 'HotovoBloky', key: 'HotovoBloky' }
+    ],
+    newFields: [
+      { label: 'Zahajeni', key: 'ZahajeniDatum' },
+      { label: 'Technik', key: 'Technik' },
+      {
+        label: 'Zakazka',
+        stickyColumn: true,
+        filterByFormatted: true,
+        key: 'Zakazka',
+        sortable: true
+      },
+      { label: 'Material', key: 'Material' },
+      { label: 'Zakazkové číslo', key: 'ZakazkaNr' },
+      { label: 'VyrobniNr', key: 'VyrobniNr' },
+      { label: 'Doc', key: 'Doc' }
     ]
   }),
   methods: {
@@ -1383,17 +1622,15 @@ export default {
       console.log(items)
       this.selected = items
     },
+    onNewRowSelected (items) {
+      console.log(items)
+      this.newSelected = items
+    },
     onSubmit (data) {
       this.filter = this.finder
     },
     updateColor () {
       console.log('AAA')
-    },
-    updateOrder (data) {
-      /*
-        v-on:dblclick="doubleClick(data.item)"
-      */
-      alert('UP')
     },
     doubleClick (data) {
       /*
@@ -1416,15 +1653,47 @@ export default {
       }
       this[data] = !this[data]
     },
-    async updateUser (item) {
+    toggleNewOrder () {
+      this.$bvModal.show('new-order-modal')
+    },
+    async createOrder () {
+      console.log('AAAA')
+    },
+    async updateOrder (item) {
       await Axios.put('http://localhost:5000/order', item)
     },
-    async removeUser (item) {
+    async removeOrder (item) {
       await Axios.delete('http://localhost:5000/order/' + item._id)
     },
-    async addUser () {
+    async addOrder () {
       await Axios.post('http://localhost:5000/order', {
       })
+    },
+    async newOrderProcess () {
+      const item = this.newSelected[0]
+      const maxSortNr = this.orders.reduce((a, b) => a.SortNr > b.SortNr ? a : b).SortNr + 1
+      await Axios.put('http://localhost:5000/order/process', { item: item, nr: maxSortNr })
+    },
+    async orderUnprocess () {
+      const item = this.selected[0]
+      await Axios.put('http://localhost:5000/order/unprocess', item)
+    },
+    moveRowToggle () {
+      this.$bvModal.show('presun-modal')
+    },
+    async moveRow () {
+      const item = this.selected[0]
+      const newPos = this.presunText
+      this.presunText = ''
+      const oldPos = item.SortNr
+      console.log('MOVE', item, newPos, oldPos)
+      if (newPos < oldPos) {
+        await Axios.put('http://localhost:5000/order/moveUp', { item: item, old: oldPos, new: newPos })
+      } else {
+        if (newPos !== oldPos) {
+          await Axios.put('http://localhost:5000/order/moveDown', { item: item, old: oldPos, new: newPos })
+        }
+      }
     }
   }
 }
@@ -1432,6 +1701,12 @@ export default {
 </script>
 
 <style>
+
+.mujContainer {
+  font-size: 0.8em;
+  font-style: normal;
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 #mojeTable table {
   border-spacing: 0px;

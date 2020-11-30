@@ -12,6 +12,7 @@
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.18.1",
     "core-js": "^3.6.5",
+    "verte": "0.0.12",
     "vue": "^2.6.12",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.2",

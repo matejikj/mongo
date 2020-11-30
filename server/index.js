@@ -17,7 +17,7 @@ app.use(bodyParser.json())
 
 app.use(cors())
 
-mongoose.connect(keys.mongoURI);
+const monCon = mongoose.connect(keys.mongoURI);
 mongoose.connection.on('error',()=>{
   console.log("Error in database connection")
 })
@@ -57,6 +57,158 @@ app.put('/order', async (req,res) => {
       }
     }
   );
+})
+
+app.put('/order/process', async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    req.body.item.IsInProccess = true
+    req.body.item.SortNr = req.body.nr
+    req.body.IsInProccess = false
+    await order.findOneAndUpdate(
+      {
+        _id: req.body.item._id
+      },
+      req.body.item,
+      {
+        session
+      }
+    );  
+    await session.commitTransaction()
+    session.endSession()
+    io.emit('orderUpdated', req.body.item);
+    res.send('Success')
+  } catch (err) {
+    await session.abortTransaction()
+    session.endSession()
+    console.log(err)
+    res.send('Error')
+  }
+})
+
+app.put('/order/unprocess', async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await order.updateMany(
+      {
+        "SortNr": { $gt: req.body.SortNr},
+        "Department": req.body.Department,
+        "IsInProccess": true
+      },
+      {
+        $inc: { "SortNr" : -1}
+      },
+      {
+        session
+      }
+    )
+    req.body.IsInProccess = false
+    await order.findOneAndUpdate(
+      {
+        _id: req.body._id
+      },
+      req.body,
+      {
+        session
+      }
+    );  
+    await session.commitTransaction()
+    session.endSession()
+    io.emit('orderUnprocessed', req.body);
+    res.send('Success')
+  } catch (err) {
+    await session.abortTransaction()
+    session.endSession()
+    console.log(err)
+    res.send('Error')
+  }
+})
+
+app.put('/order/moveDown', async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await order.updateMany(
+      {
+        $and: [
+          { "SortNr": { $gt: req.body.old }},
+          { "SortNr": { $lte: req.body.new }},
+          { "Department": req.body.item.Department },
+          { "IsInProccess": true }
+        ]
+      },
+      {
+        $inc: { "SortNr" : -1}
+      },
+      {
+        session
+      }
+    )
+    req.body.item.SortNr = req.body.new
+    await order.findOneAndUpdate(
+      {
+        _id: req.body.item._id
+      },
+      req.body.item,
+      {
+        session
+      }
+    );
+    await session.commitTransaction()
+    session.endSession()
+    console.log('AAAAAAAAAAAA')
+    io.emit('orderMovedDown', req.body);
+    res.send('Success')
+  } catch (err) {
+    await session.abortTransaction()
+    session.endSession()
+    console.log(err)
+    res.send('Error')
+  }
+})
+
+app.put('/order/moveUp', async (req,res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await order.updateMany(
+      {
+        $and: [
+          { "SortNr": { $gt: req.body.old }},
+          { "SortNr": { $lte: req.body.new }},
+          { "Department": req.body.item.Department },
+          { "IsInProccess": true }
+        ]
+      },
+      {
+        $inc: { "SortNr" : -1}
+      },
+      {
+        session
+      }
+    )
+    req.body.item.SortNr = req.body.new
+    await order.findOneAndUpdate(
+      {
+        _id: req.body.item._id
+      },
+      req.body.item,
+      {
+        session
+      }
+    );
+    await session.commitTransaction()
+    session.endSession()
+    io.emit('orderUnprocessed', req.body);
+    res.send('Success')
+  } catch (err) {
+    await session.abortTransaction()
+    session.endSession()
+    console.log(err)
+    res.send('Error')
+  }
 })
 
 app.delete('/order/:orderId', async (req,res) => {
@@ -177,6 +329,7 @@ let io =  socket(server);
 const orderChangeStream = order.watch();
 
 orderChangeStream.on('change', async (change) => {
+  // console.log(change)
   switch (change.operationType) {
     case 'insert':
       order.findById(change.documentKey._id, (err, task) => {
@@ -189,7 +342,7 @@ orderChangeStream.on('change', async (change) => {
       order.findById(change.documentKey._id, (err, task) => {
         if (err) res.send(err);
         console.log('orderUpdated')
-        io.emit('orderUpdated', task);
+        // io.emit('orderUpdated', task);
       });
       break;
     case 'delete':
